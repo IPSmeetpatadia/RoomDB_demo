@@ -42,6 +42,16 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
             val userDao = UserDB.getDatabase(getApplication()).userDao()
             userDao.insertData(user)
             getAllUser()
+            getAgedUser()
+        }
+    }
+
+    fun updateUser(user: User) {
+        viewModelScope.launch {
+            val userDao = UserDB.getDatabase(getApplication()).userDao()
+            userDao.updateData(user)
+            getAllUser()
+            getAgedUser()
         }
     }
 
@@ -50,6 +60,8 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
             val userDao = UserDB.getDatabase(getApplication()).userDao()
             userDao.deleteUser(user)
             getAllUser()
+            getAgedUser()
         }
     }
+
 }

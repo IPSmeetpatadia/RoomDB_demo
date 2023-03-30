@@ -14,7 +14,9 @@ class AllUsersAdapter(private val listener: ItemClickListener): RecyclerView.Ada
     private var userList = ArrayList<User>()
 
     fun setListData(data: ArrayList<User>) {
+        this.userList.clear()
         this.userList = data
+        notifyDataSetChanged()
     }
 
     class AllUserViewHolder(itemView: View, private val listener: ItemClickListener): RecyclerView.ViewHolder(itemView) {
@@ -40,13 +42,10 @@ class AllUsersAdapter(private val listener: ItemClickListener): RecyclerView.Ada
 
     override fun onBindViewHolder(holder: AllUserViewHolder, position: Int) {
         holder.apply {
-            /*
-            name.text =userList[position].name
-            btnDelete.setOnClickListener {
-
-            }
-            */
             bindView(userList[position])
+            itemView.setOnClickListener {
+                listener.onItemClick(userList[position])
+            }
         }
     }
 
@@ -54,4 +53,5 @@ class AllUsersAdapter(private val listener: ItemClickListener): RecyclerView.Ada
         fun onItemClick(user: User)
         fun onDeleteClick(user: User)
     }
+
 }

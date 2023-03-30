@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ import com.ipsmeet.roomdbdemo.UserDB
 import com.ipsmeet.roomdbdemo.adapter.AllUsersAdapter
 import com.ipsmeet.roomdbdemo.dataclass.User
 import com.ipsmeet.roomdbdemo.viewmodel.UserViewModel
-
 
 class FirstFragment : Fragment(), AllUsersAdapter.ItemClickListener {
 
@@ -42,20 +40,23 @@ class FirstFragment : Fragment(), AllUsersAdapter.ItemClickListener {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView_all_empList)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            val getDB = UserDB.getDatabase(requireContext()).userDao().getAllUser()
             viewAdapter = AllUsersAdapter(this@FirstFragment)
-            viewAdapter.setListData(ArrayList(getDB))
             adapter = viewAdapter
         }
 
-        viewModel.getAllUsersObservers().observe(requireActivity()) {
+        viewModel.getAllUsersObservers().observe(viewLifecycleOwner) {
             viewAdapter.setListData(ArrayList(it))
-            viewAdapter.notifyDataSetChanged()
         }
 
         view.findViewById<FloatingActionButton>(R.id.btn_addEmp).setOnClickListener {
             showPopup()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val getDB = UserDB.getDatabase(requireContext()).userDao().getAllUser()
+        viewAdapter.setListData(ArrayList(getDB))
     }
 
     private fun showPopup() {

@@ -36,20 +36,23 @@ class SecondFragment : Fragment(), AllUsersAdapter.ItemClickListener {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView_aged_empList)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            val getDB = UserDB.getDatabase(requireContext()).userDao().getAgedUser()
             viewAdapter = AllUsersAdapter(this@SecondFragment)
-            viewAdapter.setListData(ArrayList(getDB))
             adapter = viewAdapter
         }
 
-        viewModel.getAgedUsersObservers().observe(requireActivity()) {
+        viewModel.getAgedUsersObservers().observe(viewLifecycleOwner) {
             viewAdapter.setListData(ArrayList(it))
-            viewAdapter.notifyDataSetChanged()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val getDB = UserDB.getDatabase(requireContext()).userDao().getAgedUser()
+        viewAdapter.setListData(ArrayList(getDB))
+    }
+
     override fun onItemClick(user: User) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onDeleteClick(user: User) {
