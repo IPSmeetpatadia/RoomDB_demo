@@ -2,6 +2,7 @@ package com.ipsmeet.roomdbdemo.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.ipsmeet.roomdbdemo.R
 import com.ipsmeet.roomdbdemo.UserDB
 import com.ipsmeet.roomdbdemo.adapter.AllUsersAdapter
 import com.ipsmeet.roomdbdemo.dataclass.User
+import com.ipsmeet.roomdbdemo.interfaces.UserDao
 import com.ipsmeet.roomdbdemo.viewmodel.UserViewModel
 
 class FirstFragment : Fragment(), AllUsersAdapter.ItemClickListener {
@@ -88,7 +90,38 @@ class FirstFragment : Fragment(), AllUsersAdapter.ItemClickListener {
     }
 
     override fun onItemClick(user: User) {
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = LayoutInflater.from(requireContext())
+        popupView = inflater.inflate(R.layout.popup_add_list, null)
+        builder.setView(popupView)
 
+        val alertDialog = builder.create()
+        alertDialog.show()
+
+        val name = popupView.findViewById<EditText>(R.id.addList_edtxt_name)
+        val age = popupView.findViewById<EditText>(R.id.addList_edtxt_age)
+        val dob = popupView.findViewById<EditText>(R.id.addList_edtxt_dob)
+
+        popupView.findViewById<Button>(R.id.btnSaveData).text = "Update"
+
+        name.setText(user.name)
+        age.setText(user.age.toString())
+        dob.setText(user.dob)
+
+        popupView.findViewById<Button>(R.id.btnSaveData).setOnClickListener {
+            val updatedUser = User(
+                 user.id,
+                 name.editableText.toString(),
+                 age.editableText.toString().toInt(),
+                 dob.editableText.toString()
+            )
+            viewModel.updateUser(updatedUser)
+            alertDialog.dismiss()
+        }
+
+        popupView.findViewById<Button>(R.id.btn_addList_cancel).setOnClickListener {
+            alertDialog.dismiss()
+        }
     }
 
     override fun onDeleteClick(user: User) {
