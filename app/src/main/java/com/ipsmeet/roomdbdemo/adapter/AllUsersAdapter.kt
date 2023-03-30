@@ -3,6 +3,7 @@ package com.ipsmeet.roomdbdemo.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -21,10 +22,14 @@ class AllUsersAdapter(private val listener: ItemClickListener): RecyclerView.Ada
 
     class AllUserViewHolder(itemView: View, private val listener: ItemClickListener): RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.txt_userName)
+        private val age: TextView = itemView.findViewById(R.id.txt_userAge)
+        private val gender: TextView = itemView.findViewById(R.id.txt_userGender)
         private val btnDelete: ImageButton = itemView.findViewById(R.id.imgB_delete)
 
         fun bindView(user: User) {
             name.text = user.name
+            age.text = user.age.toString()
+            gender.text = user.gender
             btnDelete.setOnClickListener {
                 listener.onDeleteClick(user)
             }
@@ -46,6 +51,7 @@ class AllUsersAdapter(private val listener: ItemClickListener): RecyclerView.Ada
             itemView.setOnClickListener {
                 listener.onItemClick(userList[position])
             }
+            itemView.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.anim_recyclerview)
         }
     }
 

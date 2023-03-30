@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,13 +75,20 @@ class FirstFragment : Fragment(), AllUsersAdapter.ItemClickListener {
         val name = popupView.findViewById<EditText>(R.id.addList_edtxt_name)
         val age = popupView.findViewById<EditText>(R.id.addList_edtxt_age)
         val dob = popupView.findViewById<EditText>(R.id.addList_edtxt_dob)
+        val radioGroup: RadioGroup = popupView.findViewById(R.id.radioGroup)
+        var radioButton: RadioButton?
 
         popupView.findViewById<Button>(R.id.btnSaveData).setOnClickListener {
+            val selectedID = radioGroup.checkedRadioButtonId
+            radioButton = popupView.findViewById(selectedID)
+
             val userData = User(
                 name = name.text.toString(),
                 age = age.text.toString().toInt(),
-                dob = dob.text.toString()
+                dob = dob.text.toString(),
+                gender = radioButton!!.text.toString()
             )
+
             viewModel.addUser(userData)
             alertDialog.dismiss()
         }
@@ -101,20 +110,36 @@ class FirstFragment : Fragment(), AllUsersAdapter.ItemClickListener {
         val name = popupView.findViewById<EditText>(R.id.addList_edtxt_name)
         val age = popupView.findViewById<EditText>(R.id.addList_edtxt_age)
         val dob = popupView.findViewById<EditText>(R.id.addList_edtxt_dob)
+        val radioGroup: RadioGroup = popupView.findViewById(R.id.radioGroup)
+        var radioButton: RadioButton
+        val rBtnMale: RadioButton = popupView.findViewById(R.id.rBtn_male)
+        val rBtnFemale: RadioButton = popupView.findViewById(R.id.rBtn_female)
+
+
 
         popupView.findViewById<Button>(R.id.btnSaveData).text = "Update"
 
         name.setText(user.name)
         age.setText(user.age.toString())
         dob.setText(user.dob)
+        if (user.gender == "Male") {
+            rBtnMale.isChecked = true
+        } else if (user.gender == "Female") {
+            rBtnFemale.isChecked = true
+        }
 
         popupView.findViewById<Button>(R.id.btnSaveData).setOnClickListener {
+            val selectedID = radioGroup.checkedRadioButtonId
+            radioButton = popupView.findViewById(selectedID)
+
             val updatedUser = User(
-                 user.id,
-                 name.editableText.toString(),
-                 age.editableText.toString().toInt(),
-                 dob.editableText.toString()
+                user.id,
+                name.editableText.toString(),
+                age.editableText.toString().toInt(),
+                dob.editableText.toString(),
+                radioButton.text.toString()
             )
+
             viewModel.updateUser(updatedUser)
             alertDialog.dismiss()
         }
