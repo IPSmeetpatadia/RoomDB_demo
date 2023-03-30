@@ -1,10 +1,13 @@
 package com.ipsmeet.roomdbdemo.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +20,7 @@ import java.util.ArrayList
 
 class SecondFragment : Fragment(), AllUsersAdapter.ItemClickListener {
 
+    private lateinit var popupView: View
     private lateinit var viewModel: UserViewModel
     private lateinit var viewAdapter: AllUsersAdapter
 
@@ -52,7 +56,38 @@ class SecondFragment : Fragment(), AllUsersAdapter.ItemClickListener {
     }
 
     override fun onItemClick(user: User) {
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = LayoutInflater.from(requireContext())
+        popupView = inflater.inflate(R.layout.popup_add_list, null)
+        builder.setView(popupView)
 
+        val alertDialog = builder.create()
+        alertDialog.show()
+
+        val name = popupView.findViewById<EditText>(R.id.addList_edtxt_name)
+        val age = popupView.findViewById<EditText>(R.id.addList_edtxt_age)
+        val dob = popupView.findViewById<EditText>(R.id.addList_edtxt_dob)
+
+        popupView.findViewById<Button>(R.id.btnSaveData).text = "Update"
+
+        name.setText(user.name)
+        age.setText(user.age.toString())
+        dob.setText(user.dob)
+
+        popupView.findViewById<Button>(R.id.btnSaveData).setOnClickListener {
+            val updatedUser = User(
+                user.id,
+                name.editableText.toString(),
+                age.editableText.toString().toInt(),
+                dob.editableText.toString()
+            )
+            viewModel.updateUser(updatedUser)
+            alertDialog.dismiss()
+        }
+
+        popupView.findViewById<Button>(R.id.btn_addList_cancel).setOnClickListener {
+            alertDialog.dismiss()
+        }
     }
 
     override fun onDeleteClick(user: User) {
