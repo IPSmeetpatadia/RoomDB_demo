@@ -6,10 +6,7 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,18 +76,32 @@ class FirstFragment : Fragment(), AllUsersAdapter.ItemClickListener {
         var radioButton: RadioButton?
 
         popupView.findViewById<Button>(R.id.btnSaveData).setOnClickListener {
-            val selectedID = radioGroup.checkedRadioButtonId
-            radioButton = popupView.findViewById(selectedID)
+            if (name.text.toString() == "") {
+                name.error = "Empty Field"
+            }
+            else if (age.text.toString() == "") {
+                age?.error = "Empty Field"
+            }
+            else if (dob.text.toString() == "") {
+                dob.error = "Empty Field"
+            }
+            else if (radioGroup.checkedRadioButtonId == -1) {
+                Toast.makeText(requireContext(), "Please select Gender!!", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                val selectedID = radioGroup.checkedRadioButtonId
+                radioButton = popupView.findViewById(selectedID)
 
-            val userData = User(
-                name = name.text.toString(),
-                age = age.text.toString().toInt(),
-                dob = dob.text.toString(),
-                gender = radioButton!!.text.toString()
-            )
+                val userData = User(
+                    name = name.text.toString(),
+                    age = age.text.toString().toInt(),
+                    dob = dob.text.toString(),
+                    gender = radioButton!!.text.toString()
+                )
 
-            viewModel.addUser(userData)
-            alertDialog.dismiss()
+                viewModel.addUser(userData)
+                alertDialog.dismiss()
+            }
         }
 
         popupView.findViewById<Button>(R.id.btn_addList_cancel).setOnClickListener {
